@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>حاسبة نقاط الماجستير المهني</title>
+  </head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background-color: #f1f4f8;
+      font-family: Arial, sans-serif;
+      color: #263445;
+    }
+
+    #big-div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 24px 16px;
+    }
+
+    #calculater {
+      background-color: white;
+      width: 100%;
+      max-width: 600px;
+      height: auto;
+      min-height: 70vh;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    #calculater h1 {
+      text-align: center;
+      font-size: 28px;
+      line-height: 1.5;
+    }
+
+    #calculater h3 {
+      font-size: 18px;
+      line-height: 1.6;
+    }
+
+    .input {
+      display: block;
+      width: 100%;
+      max-width: 300px;
+      padding: 12px;
+      margin-top: 8px;
+      border: 1px solid #ccd5df;
+      border-radius: 8px;
+      text-align: right;
+      font-size: 16px;
+    }
+
+    input[type="radio"] {
+      width: 18px;
+      height: 18px;
+      vertical-align: middle;
+      cursor: pointer;
+    }
+
+    label {
+      margin-left: 12px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      margin: 20px auto;
+      padding: 13px;
+      border-radius: 10px;
+      border: none;
+      color: white;
+      background-color: #176b68;
+      font-size: 19px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #125451;
+    }
+
+    span {
+      color: #d93025;
+    }
+
+    #result > div {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      gap: 16px;
+      text-align: center;
+      flex-wrap: wrap;
+    }
+
+    #result > div > div {
+      flex: 1 1 180px;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    #result h1 {
+      color: #176b68;
+      font-size: 32px;
+    }
+
+    @media (max-width: 480px) {
+      #big-div {
+        padding: 12px;
+      }
+
+      #calculater {
+        padding: 20px 16px;
+        border-radius: 14px;
+        min-height: auto;
+      }
+
+      #calculater h1 {
+        font-size: 23px;
+      }
+
+      #calculater h3 {
+        font-size: 16px;
+      }
+
+      #result > div > div {
+        flex-basis: 100%;
+      }
+
+      #result h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+  <body>
+    <div id="big-div">
+      <div id="calculater">
+        <h1 style="text-align: center">حاسبة نقاط الماجستير المهني</h1>
+        <form id="calculator-form">
+          <h3>درجة الاختبار التخصصي<span>*</span></h3>
+          <input
+            class="input"
+            type="number"
+            id="test-score"
+            min="0"
+            max="100"
+            required
+          />
+
+          <h3>نوع المعدل الجامعي<span>*</span></h3>
+
+          <input type="radio" name="average" value="4" id="average4" />
+          <label for="average4">4</label>
+
+          <input type="radio" name="average" value="5" id="average5" />
+          <label for="average5">5</label>
+
+          <input type="radio" name="average" value="100" id="average100" />
+          <label for="average100">100%</label>
+
+          <div id="average-input"></div>
+          <br />
+          <button type="submit" style="display: none" id="calculate-btn">
+            احسب
+          </button>
+          <br />
+        </form>
+        <div id="result"></div>
+      </div>
+    </div>
+    <script>
+      const radios = document.querySelectorAll('input[name="average"]');
+      const averageInput = document.getElementById("average-input");
+
+      radios.forEach(function (radio) {
+        radio.addEventListener("change", function () {
+          let max;
+
+          if (radio.value === "4") {
+            max = 4;
+          } else if (radio.value === "5") {
+            max = 5;
+          } else if (radio.value === "100") {
+            max = 100;
+          }
+
+          averageInput.innerHTML = `
+      <h3> درجة المعدل الجامعي <span>*</span></h3> 
+      <input class="input" type="number" id="average" step="any"  min="0" max="${max}" required> 
+    `;
+
+          document.getElementById("calculate-btn").style.display = "block";
+        });
+      });
+      const form = document.getElementById("calculator-form");
+      const result = document.getElementById("result");
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const testScore = Number(document.getElementById("test-score").value);
+        const average = Number(document.getElementById("average").value);
+
+        const selectedAverage = document.querySelector(
+          'input[name="average"]:checked',
+        ).value;
+
+        let averagePercentage;
+
+        if (selectedAverage === "4") {
+          averagePercentage = (average / 4) * 100;
+        } else if (selectedAverage === "5") {
+          averagePercentage = (average / 5) * 100;
+        } else {
+          averagePercentage = average;
+        }
+
+        const finalResult = testScore * 0.7 + averagePercentage * 0.3;
+
+        result.innerHTML = `<div style="display: flex;justify-content: space-around;">
+            <div>
+    <h3>نقاطك في المفاضلة الأولية  :</h3>
+    <h1>${finalResult.toFixed(2)}</h1> من 100</div>
+    <div>
+    <h3>  في المفاضلة النهائية :</h3> 
+    <h1>${(finalResult * 0.4).toFixed(2)} </h1> من 40 </div>
+    </div>
+
+  `;
+      });
+    </script>
+  </body>
+</html>
